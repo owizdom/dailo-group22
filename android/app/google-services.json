@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "366563486393",
+    "project_id": "planar-elevator-513800-k2",
+    "storage_bucket": "planar-elevator-513800-k2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:366563486393:android:54c74d84b32ac0cbacc968",
+        "android_client_info": {
+          "package_name": "com.group22.dailo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "366563486393-gkcc87q9r8nadbei85rqmvfpi3fqjrrh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.group22.dailo",
+            "certificate_hash": "25dbd34d2ad2ac1798d5bdf63954c4409dbd81a6"
+          }
+        },
+        {
+          "client_id": "366563486393-gskfv7gem8igvrcpq111ir2dl7p959qq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfzaX0iXz_E0o7wgq4NYgdOTbyeWf965I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "366563486393-gskfv7gem8igvrcpq111ir2dl7p959qq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
