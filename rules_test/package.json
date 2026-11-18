@@ -1,0 +1,14 @@
+{
+  "name": "dailo-rules-test",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Firestore security rules tests for DailO (spec 0001, AT19)",
+  "scripts": {
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^6.0.0",
+    "firebase": "^13.3.0"
+  }
+}
