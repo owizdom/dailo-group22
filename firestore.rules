@@ -1,0 +1,145 @@
+rules_version = '2';
+
+// DailO Firestore rules, in five lines:
+// 1. Everything lives under users/{uid}. Only the signed-in owner can read or write it.
+// 2. Writing recipients, transactions or feedback also needs a verified email.
+// 3. The profile can be created and updated before verification, never deleted.
+// 4. Every write has exactly the documented fields, with the documented types and values.
+// 5. Anything not listed here is denied.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- Who is asking ----------
+
+    // Stops other users and signed-out visitors from touching someone's data.
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    // Stops accounts with an unconfirmed email from writing money records.
+    function isVerified() {
+      return request.auth.token.email_verified == true;
+    }
+
+    // ---------- Small checks used by the validators ----------
+
+    // Stops a document having extra fields or missing fields.
+    function hasExactFields(data, fieldNames) {
+      return data.keys().hasAll(fieldNames) && data.keys().size() == fieldNames.size();
+    }
+
+    // Stops networks other than the two we support.
+    function validNetwork(value) {
+      return value in ['mtn', 'airtel'];
+    }
+
+    // Stops malformed phone numbers: 07, then 2, 3, 8 or 9, then seven digits.
+    function validPhone(value) {
+      return value is string && value.matches('^07[2389][0-9]{7}$');
+    }
+
+    // Stops a time field holding anything but a timestamp (a server timestamp counts).
+    function isTimestamp(value) {
+      return value is timestamp;
+    }
+
+    // Stops a whole-number field holding text, decimals or negative numbers.
+    function isNonNegativeInt(value) {
+      return value is int && value >= 0;
+    }
+
+    // ---------- Validators, one per document type ----------
+
+    // Stops bad profiles, including an email that is not the one in the sign-in token.
+    function validProfile(data) {
+      return hasExactFields(data, ['firstName', 'lastName', 'email', 'phone', 'network', 'createdAt', 'updatedAt'])
+        && data.firstName is string
+        && data.lastName is string
+        && data.email == request.auth.token.email
+        && (data.phone == '' || validPhone(data.phone))
+        && validNetwork(data.network)
+        && isTimestamp(data.createdAt)
+        && isTimestamp(data.updatedAt);
+    }
+
+    // Stops bad recipients: name 1 to 60 characters, real phone, true or false favourite.
+    function validRecipient(data) {
+      return hasExactFields(data, ['name', 'phone', 'network', 'isFavorite', 'lastPaidAt', 'createdAt', 'updatedAt'])
+        && data.name is string
+        && data.name.size() >= 1
+        && data.name.size() <= 60
+        && validPhone(data.phone)
+        && validNetwork(data.network)
+        && data.isFavorite is bool
+        && (data.lastPaidAt == null || isTimestamp(data.lastPaidAt))
+        && isTimestamp(data.createdAt)
+        && isTimestamp(data.updatedAt);
+    }
+
+    // Stops bad transactions: known type and status, amount 1 to 10,000,000, whole-number fee.
+    function validTransaction(data) {
+      return hasExactFields(data, ['type', 'recipientId', 'counterpartyName', 'counterpartyPhone', 'network', 'amount', 'fee', 'comment', 'status', 'createdAt', 'updatedAt'])
+        && data.type in ['send', 'airtime', 'data']
+        && (data.recipientId == null || data.recipientId is string)
+        && data.counterpartyName is string
+        && (data.counterpartyPhone == '' || validPhone(data.counterpartyPhone))
+        && validNetwork(data.network)
+        && data.amount is int
+        && data.amount >= 1
+        && data.amount <= 10000000
+        && isNonNegativeInt(data.fee)
+        && data.comment is string
+        && data.status in ['pending', 'success', 'failed']
+        && isTimestamp(data.createdAt)
+        && isTimestamp(data.updatedAt);
+    }
+
+    // Stops bad feedback: message 10 to 2000 characters, rating 1 to 5.
+    function validFeedback(data) {
+      return hasExactFields(data, ['message', 'rating', 'createdAt'])
+        && data.message is string
+        && data.message.size() >= 10
+        && data.message.size() <= 2000
+        && data.rating is int
+        && data.rating >= 1
+        && data.rating <= 5
+        && isTimestamp(data.createdAt);
+    }
+
+    // Stops an update from rewriting the original creation time.
+    function createdAtUnchanged() {
+      return request.resource.data.createdAt == resource.data.createdAt;
+    }
+
+    // ---------- Where the data lives ----------
+
+    match /users/{uid} {
+      // Profile: owner only, no deletes, no verification needed.
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid) && validProfile(request.resource.data);
+      allow update: if isOwner(uid) && validProfile(request.resource.data) && createdAtUnchanged();
+      allow delete: if false;
+
+      match /recipients/{recipientId} {
+        allow read: if isOwner(uid);
+        allow create: if isOwner(uid) && isVerified() && validRecipient(request.resource.data);
+        allow update: if isOwner(uid) && isVerified() && validRecipient(request.resource.data) && createdAtUnchanged();
+        allow delete: if isOwner(uid) && isVerified();
+      }
+
+      match /transactions/{txId} {
+        allow read: if isOwner(uid);
+        allow create: if isOwner(uid) && isVerified() && validTransaction(request.resource.data);
+        allow update: if isOwner(uid) && isVerified() && validTransaction(request.resource.data) && createdAtUnchanged();
+        allow delete: if isOwner(uid) && isVerified();
+      }
+
+      // Feedback can be sent and read back, never changed or removed.
+      match /feedback/{feedbackId} {
+        allow read: if isOwner(uid);
+        allow create: if isOwner(uid) && isVerified() && validFeedback(request.resource.data);
+        allow update, delete: if false;
+      }
+    }
+  }
+}
