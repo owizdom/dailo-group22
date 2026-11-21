@@ -19,6 +19,11 @@ import 'package:dailo/presentation/screens/auth/sign_in_screen.dart';
 import 'package:dailo/presentation/screens/auth/sign_up_details_screen.dart';
 import 'package:dailo/presentation/screens/auth/sign_up_name_screen.dart';
 import 'package:dailo/presentation/screens/auth/verify_email_screen.dart';
+import 'package:dailo/presentation/screens/home/edit_profile_screen.dart';
+import 'package:dailo/presentation/screens/home/feedback_screen.dart';
+import 'package:dailo/presentation/screens/home/home_screen.dart';
+import 'package:dailo/presentation/screens/home/settings_screen.dart';
+import 'package:dailo/presentation/screens/home/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -126,6 +131,33 @@ final screenCases = <ScreenCase>[
     build: () => const ForgotPasswordScreen(),
     mustShow: find.byKey(K.forgotSubmit),
     session: null,
+  ),
+  ScreenCase(
+    name: 'SplashScreen',
+    build: () => const SplashScreen(),
+    mustShow: find.byType(CircularProgressIndicator),
+    session: null,
+    hasSpinner: true,
+  ),
+  ScreenCase(
+    name: 'HomeScreen',
+    build: () => const HomeScreen(),
+    mustShow: find.byKey(K.homeSend),
+  ),
+  ScreenCase(
+    name: 'SettingsScreen',
+    build: () => const SettingsScreen(),
+    mustShow: find.byKey(K.settingsSignOut),
+  ),
+  ScreenCase(
+    name: 'EditProfileScreen',
+    build: () => const EditProfileScreen(),
+    mustShow: find.byKey(K.profileSave),
+  ),
+  ScreenCase(
+    name: 'FeedbackScreen',
+    build: () => const FeedbackScreen(),
+    mustShow: find.byKey(K.feedbackSubmit),
   ),
 ];
 
