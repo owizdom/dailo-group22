@@ -20,6 +20,10 @@ import 'package:dailo/presentation/screens/auth/sign_in_screen.dart';
 import 'package:dailo/presentation/screens/auth/sign_up_details_screen.dart';
 import 'package:dailo/presentation/screens/auth/sign_up_name_screen.dart';
 import 'package:dailo/presentation/screens/auth/verify_email_screen.dart';
+import 'package:dailo/presentation/screens/history/buy_airtime_screen.dart';
+import 'package:dailo/presentation/screens/history/buy_data_screen.dart';
+import 'package:dailo/presentation/screens/history/transaction_detail_screen.dart';
+import 'package:dailo/presentation/screens/history/transaction_history_screen.dart';
 import 'package:dailo/presentation/screens/home/edit_profile_screen.dart';
 import 'package:dailo/presentation/screens/home/feedback_screen.dart';
 import 'package:dailo/presentation/screens/home/home_screen.dart';
@@ -236,6 +240,26 @@ final screenCases = <ScreenCase>[
     name: 'GenerateQrScreen',
     build: () => const GenerateQrScreen(),
     mustShow: find.byKey(K.qrImage),
+  ),
+  ScreenCase(
+    name: 'TransactionHistoryScreen',
+    build: () => const TransactionHistoryScreen(),
+    mustShow: find.byKey(K.historySearch),
+  ),
+  ScreenCase(
+    name: 'TransactionDetailScreen',
+    build: () => const TransactionDetailScreen(recordId: 't3'),
+    mustShow: find.byKey(K.detailStatus),
+  ),
+  ScreenCase(
+    name: 'BuyAirtimeScreen',
+    build: () => const BuyAirtimeScreen(),
+    mustShow: find.byKey(K.airtimeBuy),
+  ),
+  ScreenCase(
+    name: 'BuyDataScreen',
+    build: () => const BuyDataScreen(),
+    mustShow: find.byKey(K.dataBuy),
   ),
 ];
 
