@@ -1,4 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Dial USSD codes (asked at runtime on first use). -->
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <!-- Scan QR codes with mobile_scanner. -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- Devices without a phone (tablets, emulators) can still install the app. -->
+    <uses-feature android:name="android.hardware.telephony" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
     <application
         android:label="dailo"
         android:name="${applicationName}"
@@ -37,6 +44,11 @@
 
          In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
     <queries>
+        <!-- Lets resolveActivity find the dialer on Android 11 and newer. -->
+        <intent>
+            <action android:name="android.intent.action.CALL"/>
+            <data android:scheme="tel"/>
+        </intent>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
