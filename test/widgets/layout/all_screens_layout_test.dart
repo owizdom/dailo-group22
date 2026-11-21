@@ -309,6 +309,43 @@ void main() {
           expect(tester.takeException(), isNull);
         });
       }
+
+      testWidgets('has no overflow in Kinyarwanda on a small phone', (
+        tester,
+      ) async {
+        await showScreen(
+          tester,
+          screen,
+          size: smallPhone,
+          language: AppLanguage.kinyarwanda,
+        );
+
+        expect(screen.mustShow, findsOneWidget);
+        expect(tester.takeException(), isNull);
+      });
+
+      for (final dark in [false, true]) {
+        final theme = dark ? 'dark' : 'light';
+        testWidgets('meets the accessibility guidelines in the $theme theme', (
+          tester,
+        ) async {
+          final handle = tester.ensureSemantics();
+          try {
+            await showScreen(tester, screen, dark: dark);
+
+            expect(screen.mustShow, findsOneWidget);
+            await expectLater(
+              tester,
+              meetsGuideline(androidTapTargetGuideline),
+            );
+            await expectLater(tester, meetsGuideline(textContrastGuideline));
+          } finally {
+            // Released even when a check above fails, so the real failure
+            // is reported instead of a "semantics handle still open" error.
+            handle.dispose();
+          }
+        });
+      }
     });
   }
 }
