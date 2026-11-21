@@ -25,6 +25,9 @@ import 'package:dailo/presentation/screens/home/feedback_screen.dart';
 import 'package:dailo/presentation/screens/home/home_screen.dart';
 import 'package:dailo/presentation/screens/home/settings_screen.dart';
 import 'package:dailo/presentation/screens/home/splash_screen.dart';
+import 'package:dailo/presentation/screens/recipients/edit_recipient_screen.dart';
+import 'package:dailo/presentation/screens/recipients/generate_qr_screen.dart';
+import 'package:dailo/presentation/screens/recipients/recipients_screen.dart';
 import 'package:dailo/presentation/screens/send/amount_screen.dart';
 import 'package:dailo/presentation/screens/send/payment_result_screen.dart';
 import 'package:dailo/presentation/screens/send/review_payment_screen.dart';
@@ -218,6 +221,21 @@ final screenCases = <ScreenCase>[
     build: () => const PaymentResultScreen(),
     mustShow: find.byKey(K.resultDone),
     prepare: (app) => sendUpTo(app, SendStep.done),
+  ),
+  ScreenCase(
+    name: 'RecipientsScreen',
+    build: () => const RecipientsScreen(),
+    mustShow: find.byKey(K.recipientsAdd),
+  ),
+  ScreenCase(
+    name: 'EditRecipientScreen',
+    build: () => EditRecipientScreen(recipient: longNameRecipient()),
+    mustShow: find.byKey(K.editSave),
+  ),
+  ScreenCase(
+    name: 'GenerateQrScreen',
+    build: () => const GenerateQrScreen(),
+    mustShow: find.byKey(K.qrImage),
   ),
 ];
 
