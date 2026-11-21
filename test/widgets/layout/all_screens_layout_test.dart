@@ -14,6 +14,7 @@ import 'package:dailo/domain/entities/app_settings.dart';
 import 'package:dailo/domain/entities/auth_session.dart';
 import 'package:dailo/domain/entities/network.dart';
 import 'package:dailo/domain/entities/transaction_record.dart';
+import 'package:dailo/presentation/cubits/send_money_cubit.dart';
 import 'package:dailo/presentation/screens/auth/forgot_password_screen.dart';
 import 'package:dailo/presentation/screens/auth/sign_in_screen.dart';
 import 'package:dailo/presentation/screens/auth/sign_up_details_screen.dart';
@@ -24,6 +25,11 @@ import 'package:dailo/presentation/screens/home/feedback_screen.dart';
 import 'package:dailo/presentation/screens/home/home_screen.dart';
 import 'package:dailo/presentation/screens/home/settings_screen.dart';
 import 'package:dailo/presentation/screens/home/splash_screen.dart';
+import 'package:dailo/presentation/screens/send/amount_screen.dart';
+import 'package:dailo/presentation/screens/send/payment_result_screen.dart';
+import 'package:dailo/presentation/screens/send/review_payment_screen.dart';
+import 'package:dailo/presentation/screens/send/scan_qr_screen.dart';
+import 'package:dailo/presentation/screens/send/send_money_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -97,6 +103,26 @@ void addLongNames(TestApp app) {
   );
 }
 
+/// Moves the send cubit through the steps up to [step], with the worst-case
+/// inputs: the long-named recipient, an amount 500 above a fee band (so the
+/// hint shows) and a long comment.
+Future<void> sendUpTo(TestApp app, SendStep step) async {
+  final send = app.sendCubit;
+  send.start();
+  send.chooseRecipient(longNameRecipient());
+  send.setAmount(10500);
+  send.setComment(longComment);
+  if (step != SendStep.amount) send.toReview();
+  if (step == SendStep.awaitingResult || step == SendStep.done) {
+    await send.confirm();
+  }
+  if (step == SendStep.done) await send.report(TxStatus.success);
+
+  // If the cubit did not get there, say so here instead of failing later
+  // with a puzzling "widget not found".
+  expect(send.state.step, step, reason: 'the send cubit did not reach $step');
+}
+
 /// Every screen, in the order of `contracts/screens.md`.
 final screenCases = <ScreenCase>[
   ScreenCase(
@@ -158,6 +184,40 @@ final screenCases = <ScreenCase>[
     name: 'FeedbackScreen',
     build: () => const FeedbackScreen(),
     mustShow: find.byKey(K.feedbackSubmit),
+  ),
+  ScreenCase(
+    name: 'SendMoneyScreen',
+    build: () => const SendMoneyScreen(),
+    mustShow: find.byKey(K.sendContinue),
+  ),
+  ScreenCase(
+    name: 'ScanQrScreen',
+    build: () => ScanQrScreen(scannerBuilder: (_) => const SizedBox()),
+    mustShow: find.byKey(K.scanManual),
+  ),
+  ScreenCase(
+    name: 'AmountScreen',
+    build: () => const AmountScreen(),
+    mustShow: find.byKey(K.amountReview),
+    prepare: (app) => sendUpTo(app, SendStep.amount),
+  ),
+  ScreenCase(
+    name: 'ReviewPaymentScreen',
+    build: () => const ReviewPaymentScreen(),
+    mustShow: find.byKey(K.reviewConfirm),
+    prepare: (app) => sendUpTo(app, SendStep.review),
+  ),
+  ScreenCase(
+    name: 'PaymentResultScreen (asking what the network said)',
+    build: () => const PaymentResultScreen(),
+    mustShow: find.byKey(K.resultYes),
+    prepare: (app) => sendUpTo(app, SendStep.awaitingResult),
+  ),
+  ScreenCase(
+    name: 'PaymentResultScreen (receipt)',
+    build: () => const PaymentResultScreen(),
+    mustShow: find.byKey(K.resultDone),
+    prepare: (app) => sendUpTo(app, SendStep.done),
   ),
 ];
 
