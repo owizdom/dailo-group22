@@ -4,11 +4,11 @@ import '../../../core/formatters.dart';
 import '../../../core/keys.dart';
 import '../../../core/theme.dart';
 
-/// The quick amounts under the amount field: 500, 1,000, 5,000 and 10,000.
+/// The quick amounts under the amount field: 500, 1,000 and 5,000, as in the Figma frame.
 class AmountChips extends StatelessWidget {
   const AmountChips({super.key, required this.onPick});
 
-  static const amounts = [500, 1000, 5000, 10000];
+  static const amounts = [500, 1000, 5000];
 
   final ValueChanged<int> onPick;
 
