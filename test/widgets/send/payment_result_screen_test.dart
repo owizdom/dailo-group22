@@ -3,6 +3,7 @@ import 'package:dailo/core/routes.dart';
 import 'package:dailo/domain/entities/transaction_record.dart';
 import 'package:dailo/presentation/cubits/send_money_cubit.dart';
 import 'package:dailo/presentation/screens/send/payment_result_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../fakes/harness.dart';
@@ -127,6 +128,34 @@ void main() {
       expectOnRoute(app, Routes.amount);
       // Replaced, not pushed: the receipt is gone from the stack.
       expect(find.byKey(K.resultPayAgain, skipOffstage: false), findsNothing);
+    });
+
+    // Found in review: Pay again pushed a second Amount screen on top of the
+    // first, so Back from it landed on a duplicate instead of Send Money.
+    testWidgets('Pay again goes back to the Amount screen underneath', (
+      tester,
+    ) async {
+      final app = await showResult(tester);
+      final navigator = tester.state<NavigatorState>(find.byType(Navigator));
+      // The real stack: Send Money, Amount, then the receipt above them.
+      navigator.pop();
+      await tester.pumpAndSettle();
+      navigator.pushNamed(Routes.amount);
+      await tester.pumpAndSettle();
+      navigator.push(
+        MaterialPageRoute<void>(builder: (_) => const PaymentResultScreen()),
+      );
+      await tester.pumpAndSettle();
+      await press(tester, K.resultYes);
+
+      await press(tester, K.resultPayAgain);
+
+      expect(app.sendCubit.state.step, SendStep.amount);
+      expect(
+        find.text('route:${Routes.amount}', skipOffstage: false),
+        findsOneWidget,
+      );
+      expect(find.byKey(basePageKey, skipOffstage: false), findsOneWidget);
     });
   });
 }
