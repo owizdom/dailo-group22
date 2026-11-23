@@ -29,6 +29,7 @@ class AppTextField extends StatefulWidget {
     this.suffixIcon,
     this.autofillHints,
     this.style,
+    this.underlined = false,
   });
 
   /// Goes on the inner TextFormField so tests can type into it.
@@ -51,9 +52,18 @@ class AppTextField extends StatefulWidget {
   /// Overrides the text style, for example the large amount number.
   final TextStyle? style;
 
+  /// A line under the text instead of a filled box, as in the Figma
+  /// sign-in and sign-up frames.
+  final bool underlined;
+
   @override
   State<AppTextField> createState() => _AppTextFieldState();
 }
+
+UnderlineInputBorder _line(Color color, {double width = 1}) =>
+    UnderlineInputBorder(
+      borderSide: BorderSide(color: color, width: width),
+    );
 
 class _AppTextFieldState extends State<AppTextField> {
   /// Whether a password is hidden. A ValueNotifier rebuilds only the field,
@@ -98,6 +108,25 @@ class _AppTextFieldState extends State<AppTextField> {
                 return error == null ? null : strings.fieldError(error);
               },
               decoration: InputDecoration(
+                filled: widget.underlined ? false : null,
+                contentPadding: widget.underlined
+                    ? const EdgeInsets.symmetric(vertical: 12)
+                    : null,
+                border: widget.underlined
+                    ? _line(context.palette.mutedText)
+                    : null,
+                enabledBorder: widget.underlined
+                    ? _line(context.palette.mutedText)
+                    : null,
+                focusedBorder: widget.underlined
+                    ? _line(Theme.of(context).colorScheme.primary, width: 2)
+                    : null,
+                errorBorder: widget.underlined
+                    ? _line(Theme.of(context).colorScheme.error)
+                    : null,
+                focusedErrorBorder: widget.underlined
+                    ? _line(Theme.of(context).colorScheme.error, width: 2)
+                    : null,
                 hintText: widget.hint,
                 prefixText: widget.prefixText,
                 errorMaxLines: 3,

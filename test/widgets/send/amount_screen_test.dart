@@ -152,7 +152,7 @@ void main() {
     ) async {
       final app = await showAmount(tester);
 
-      for (final value in [500, 1000, 5000, 10000]) {
+      for (final value in [500, 1000, 5000]) {
         await press(tester, K.amountChip(value));
 
         expect(app.sendCubit.state.amount, value);

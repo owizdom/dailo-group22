@@ -125,7 +125,13 @@ ThemeData _build(ColorScheme scheme, Color page, AppPalette palette) {
   final buttonShape = RoundedRectangleBorder(
     borderRadius: BorderRadius.circular(AppSizes.fieldRadius),
   );
-  const buttonText = TextStyle(fontSize: 15, fontWeight: FontWeight.w700);
+  // Button labels name Inter too. Without it Material buttons fall back to
+  // the platform font and the labels stop matching the Figma design.
+  const buttonText = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 15,
+    fontWeight: FontWeight.w700,
+  );
 
   return base.copyWith(
     textTheme: base.textTheme.apply(
