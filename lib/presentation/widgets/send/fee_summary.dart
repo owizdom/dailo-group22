@@ -5,6 +5,7 @@ import '../../../core/formatters.dart';
 import '../../../core/keys.dart';
 import '../../../core/l10n/app_strings.dart';
 import '../../../core/theme.dart';
+import '../../../domain/logic/fee_table.dart';
 import '../../cubits/send_money_cubit.dart';
 import '../common/notice_box.dart';
 import '../common/section_card.dart';
@@ -20,17 +21,24 @@ class FeeSummary extends StatelessWidget {
     return BlocBuilder<SendMoneyCubit, SendMoneyState>(
       builder: (context, state) {
         final hint = state.hint;
+        // Above the largest amount there is no fee to show. A dash, not
+        // "0 Frw", so the row never reads like a free transfer.
+        final overLimit = state.amount > maxAmount;
         return Column(
           children: [
             LabeledRow(
               label: strings.fee,
-              value: state.feeKnown ? formatFrw(state.fee) : strings.feeUnknown,
+              value: overLimit
+                  ? '—'
+                  : state.feeKnown
+                  ? formatFrw(state.fee)
+                  : strings.feeUnknown,
               valueKey: K.amountFee,
             ),
             const Divider(),
             LabeledRow(
               label: strings.total,
-              value: formatFrw(state.total),
+              value: overLimit ? '—' : formatFrw(state.total),
               valueKey: K.amountTotal,
             ),
             if (hint != null) ...[
