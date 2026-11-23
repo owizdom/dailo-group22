@@ -64,6 +64,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   autovalidate: _autovalidate,
                   children: [
                     AppTextField(
+                      underlined: true,
                       fieldKey: K.forgotEmail,
                       controller: _email,
                       label: s.authEmail,
