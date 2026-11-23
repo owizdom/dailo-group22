@@ -57,6 +57,7 @@ class _SignInScreenState extends State<SignInScreen> {
           autovalidate: _autovalidate,
           children: [
             AppTextField(
+              underlined: true,
               fieldKey: K.signInEmail,
               controller: _email,
               label: s.authEmail,
@@ -67,6 +68,7 @@ class _SignInScreenState extends State<SignInScreen> {
               autofillHints: const [AutofillHints.email],
             ),
             AppTextField(
+              underlined: true,
               fieldKey: K.signInPassword,
               controller: _password,
               label: s.authPassword,

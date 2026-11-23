@@ -76,6 +76,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
             autovalidate: _autovalidate,
             children: [
               AppTextField(
+                underlined: true,
                 fieldKey: K.signUpEmail,
                 controller: _email,
                 label: s.authEmail,
@@ -86,6 +87,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                 autofillHints: const [AutofillHints.email],
               ),
               AppTextField(
+                underlined: true,
                 fieldKey: K.signUpPhone,
                 controller: _phone,
                 label: s.phoneNumber,
@@ -96,6 +98,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                 autofillHints: const [AutofillHints.telephoneNumber],
               ),
               AppTextField(
+                underlined: true,
                 fieldKey: K.signUpPassword,
                 controller: _password,
                 label: s.authPassword,
@@ -105,6 +108,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                 autofillHints: const [AutofillHints.newPassword],
               ),
               AppTextField(
+                underlined: true,
                 fieldKey: K.signUpConfirm,
                 controller: _confirm,
                 label: s.authConfirmPassword,

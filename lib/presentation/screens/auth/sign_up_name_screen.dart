@@ -73,6 +73,7 @@ class _SignUpNameScreenState extends State<SignUpNameScreen> {
           autovalidate: _autovalidate,
           children: [
             AppTextField(
+              underlined: true,
               fieldKey: K.signUpFirstName,
               controller: _firstName,
               label: s.authFirstName,
@@ -81,6 +82,7 @@ class _SignUpNameScreenState extends State<SignUpNameScreen> {
               autofillHints: const [AutofillHints.givenName],
             ),
             AppTextField(
+              underlined: true,
               fieldKey: K.signUpLastName,
               controller: _lastName,
               label: s.authLastName,
