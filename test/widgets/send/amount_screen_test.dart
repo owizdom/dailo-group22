@@ -54,6 +54,19 @@ void main() {
       expect(find.byKey(K.amountHintApply), findsOneWidget);
     });
 
+    // Found in review of #9: 20,000,000 showed a fee of "0 Frw", which reads
+    // like a free transfer.
+    testWidgets('above 10,000,000 the fee and total show a dash, not 0', (
+      tester,
+    ) async {
+      await showAmount(tester);
+
+      await enterIn(tester, K.amountField, '20000000');
+
+      expect(textOf(tester, K.amountFee), '—');
+      expect(textOf(tester, K.amountTotal), '—');
+    });
+
     testWidgets('10,000 costs 100 and offers no hint', (tester) async {
       await showAmount(tester);
 
