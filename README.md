@@ -16,6 +16,37 @@ Built by Summative Project Group 22 for Mobile Application Development at Africa
 
 The MoMo PIN is never typed into DailO. The network's own USSD dialog asks for it.
 
+## Screens
+
+The pictures are drawn by the widget tests at phone size, with the same sample data the tests use.
+
+<table>
+  <tr>
+    <td><img src="docs/screens/sign_in.png" width="180" alt="Sign In"></td>
+    <td><img src="docs/screens/home.png" width="180" alt="Home"></td>
+    <td><img src="docs/screens/home_dark.png" width="180" alt="Home in dark mode"></td>
+    <td><img src="docs/screens/send_money.png" width="180" alt="Send Money"></td>
+  </tr>
+  <tr>
+    <td align="center">Sign in</td>
+    <td align="center">Home</td>
+    <td align="center">Dark mode</td>
+    <td align="center">Send money</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screens/amount.png" width="180" alt="Amount with the live fee"></td>
+    <td><img src="docs/screens/review.png" width="180" alt="Review payment"></td>
+    <td><img src="docs/screens/recipients.png" width="180" alt="Recipients"></td>
+    <td><img src="docs/screens/history.png" width="180" alt="Transaction history"></td>
+  </tr>
+  <tr>
+    <td align="center">Amount</td>
+    <td align="center">Review</td>
+    <td align="center">Recipients</td>
+    <td align="center">History</td>
+  </tr>
+</table>
+
 ## Run it
 
 You need Flutter 3.47 or newer and an Android phone or emulator. Web and desktop are not supported.
@@ -41,7 +72,7 @@ flutter test
 tool/check.sh
 ```
 
-`tool/check.sh` is the full gate: format, analyzer, architecture rules, 780 tests and a 70% coverage floor. The security rules have their own 182 tests, described in `docs/security_rules.md`. More detail is in `docs/testing.md`.
+`tool/check.sh` is the full gate: format, analyzer, architecture rules, 787 tests and a 70% coverage floor. The security rules have their own 182 tests, described in `docs/security_rules.md`. More detail is in `docs/testing.md`.
 
 ## How the code is organised
 
@@ -73,7 +104,7 @@ The three layers only point inwards. Screens talk to cubits. Cubits talk to the 
 
 DailO uses Cubit from `flutter_bloc`. Each cubit owns one feature's state and exposes plain methods such as `signIn`, `add` or `confirm`. A screen rebuilds from the state with `BlocBuilder` and shows one-off messages with `BlocListener`.
 
-Home and Send Money both read the same `RecipientsCubit`, so a recipient added on one screen shows on the other at once.
+The Recipients screen and Send Money both read the same `RecipientsCubit`, so a recipient added on one screen shows on the other at once.
 
 ## Database
 
