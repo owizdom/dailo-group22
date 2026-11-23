@@ -40,9 +40,9 @@ class HeaderBanner extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.fromLTRB(
                 20,
-                (rounded ? 36 : 22) + topInset,
+                (rounded ? 36 : 32) + topInset,
                 20,
-                rounded ? 36 : 22,
+                rounded ? 36 : 32,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -54,7 +54,7 @@ class HeaderBanner extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: rounded ? 24 : 20,
+                      fontSize: rounded ? 24 : 22,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
