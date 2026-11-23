@@ -86,9 +86,18 @@ class _Receipt extends StatelessWidget {
     Navigator.popUntil(context, (route) => route.isFirst);
   }
 
+  /// Goes back to the Amount screen this payment came from, so Back from
+  /// there still reaches Send Money. Opens a new Amount screen only when
+  /// there is none underneath.
   void _payAgain(BuildContext context) {
     context.read<SendMoneyCubit>().payAgain();
-    Navigator.pushReplacementNamed(context, Routes.amount);
+    final navigator = Navigator.of(context);
+    var amountBelow = false;
+    navigator.popUntil((route) {
+      amountBelow = route.settings.name == Routes.amount;
+      return amountBelow || route.isFirst;
+    });
+    if (!amountBelow) navigator.pushNamed(Routes.amount);
   }
 
   @override
